@@ -41,6 +41,23 @@
             ]
         },
         {
+            "image" : "images/projects/RTSmix.png",
+            "title": "RTS mixed with Real Time Combat",
+            "bodyText": "- A top down action game where you can control units while battling enemies yourself",
+            "links": [
+               
+                {
+                    "text": "Watch Progress Playlist",
+                    "href": "https://youtu.be/U1cmPnttQCI"
+                }
+            ],
+            "tags" : [
+                "Unity",
+                "C#",
+                "Shaderlab"
+            ]
+        },
+        {
             "image" : "images/projects/chatInkle.jpg",
             "title": "Freelance Visual Novel Setup",
             "bodyText": "- An RPG chat game made with Unity, C# and Inkle to simulate texting with a character on the phone where choices lead to different stories.",
