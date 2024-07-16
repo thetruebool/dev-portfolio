@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Container, Col, Row } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import Fade from 'react-reveal';
 import Header from './Header';
 import endpoints from '../constants/endpoints';
 import FallbackSpinner from './FallbackSpinner';
@@ -22,11 +21,19 @@ const styles = {
     alignItems: 'center',
     display: 'flex',
   },
+  fadeIn: {
+    opacity: 1,
+    transition: 'opacity 0.5s ease-in-out',
+  },
+  fadeOut: {
+    opacity: 0,
+  },
 };
 
 function About(props) {
   const { header } = props;
   const [data, setData] = useState(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   const parseIntro = (text) => (
     <ReactMarkdown
@@ -39,7 +46,10 @@ function About(props) {
       method: 'GET',
     })
       .then((res) => res.json())
-      .then((res) => setData(res))
+      .then((res) => {
+        setData(res);
+        setIsVisible(true); // Trigger fade in after data is fetched
+      })
       .catch((err) => err);
   }, []);
 
@@ -48,20 +58,18 @@ function About(props) {
       <Header title={header} />
       <div className="section-content-container">
         <Container>
-          {data
-            ? (
-              <Fade>
-                <Row>
-                  <Col style={styles.introTextContainer}>
-                    {parseIntro(data.about)}
-                  </Col>
-                  <Col style={styles.introImageContainer}>
-                    <img src={data?.imageSource} alt="profile" />
-                  </Col>
-                </Row>
-              </Fade>
-            )
-            : <FallbackSpinner />}
+          {data ? (
+            <Row style={isVisible ? styles.fadeIn : styles.fadeOut}>
+              <Col style={styles.introTextContainer}>
+                {parseIntro(data.about)}
+              </Col>
+              <Col style={styles.introImageContainer}>
+                <img src={data?.imageSource} alt="profile" />
+              </Col>
+            </Row>
+          ) : (
+            <FallbackSpinner />
+          )}
         </Container>
       </div>
     </>
