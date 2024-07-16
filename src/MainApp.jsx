@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense } from 'react';
-import { Route, BrowserRouter as Router } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import FallbackSpinner from './components/FallbackSpinner';
 import NavBarWithRouter from './components/NavBar';
 import Home from './components/Home';
@@ -18,34 +18,29 @@ function MainApp() {
   }, []);
 
   return (
-    <Router>
-      <div className="MainApp">
-        <NavBarWithRouter />
-        <main className="main">
-          {data ? (
-            <>
-              <Route exact path="/" component={Home} />
-              {data.sections.map((route) => {
-                const SectionComponent = React.lazy(() => import(`./components/${route.component}`));
+    <div className="MainApp">
+      <NavBarWithRouter />
+      <main className="main">
+        <Switch>
+          <Suspense fallback={<FallbackSpinner />}>
+            <Route exact path="/" component={Home} />
+            {data
+              && data.sections.map((route) => {
+                const SectionComponent = React.lazy(() => import('./components/' + route.component));
                 return (
                   <Route
                     key={route.headerTitle}
                     path={route.path}
-                    render={(props) => (
-                      <Suspense fallback={<FallbackSpinner />}>
-                        <SectionComponent {...props} header={route.headerTitle} />
-                      </Suspense>
+                    component={() => (
+                      <SectionComponent header={route.headerTitle} />
                     )}
                   />
                 );
               })}
-            </>
-          ) : (
-            <FallbackSpinner />
-          )}
-        </main>
-      </div>
-    </Router>
+          </Suspense>
+        </Switch>
+      </main>
+    </div>
   );
 }
 
